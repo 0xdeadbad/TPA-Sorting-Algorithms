@@ -2,6 +2,8 @@
 #define __ARRAYLIST_H__
 #include "sys/types.h"
 
+#define arraylist_destroy(a) free((a)->array);
+
 typedef struct {
     void *array;
     size_t item_size;

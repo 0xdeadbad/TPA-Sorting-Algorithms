@@ -20,6 +20,3 @@ void arraylist_pushback(arraylist_p a, void *v) {
 
 	memcpy((uint8_t*)a->array+(a->item_size*a->size++), v, a->item_size);
 }
-
-#define arraylist_destroy(a) free((a)->array);
-
