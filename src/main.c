@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <getopt.h>
 #include <string.h>
+#include <errno.h>
 
 #include "core/typedefs.h"
 #include "uthash/uthash.h"
@@ -40,8 +41,11 @@ int32_t cmp(void *a, void *b) {
 
 int main(int argc, char **argv) {
     int option_index;
-    char *input, *output = "output.csv", c;
+    char *input, *output, c;
     arraylist_t array;
+
+    input = NULL;
+    output = NULL;
 
     static struct option long_options[] = {
         {"algorithm", required_argument, NULL, 'a'},
@@ -61,25 +65,45 @@ int main(int argc, char **argv) {
                 break;
             case 'i':
                 /* Linux maximum file name is 256 chars. */
-                input = malloc(sizeof(char)*256);
+                if((input = calloc(256, sizeof(char))) == NULL) {
+                    fprintf(stderr, "Error: %s\n", "Error trying to calloc() input.");
+                    return EXIT_FAILURE;
+                }
+                /* I don't like to use strcpy, because it might cause undefined behavior in some circunstances, but it's easier to use, so I'm going to use it anyway... */
                 strcpy(input, optarg);
                 /* In case file is small than 256, shrink allocated space. */
-                input = realloc(input, strlen(input));
+                if((input = realloc(input, strlen(input))) == NULL) {
+                    fprintf(stderr, "Error: %s\n", "Error trying to realloc() input.");
+                    return EXIT_FAILURE;
+                }
                 break;
             case 'o':
                 /* Linux maximum file name is 256 chars. */
-                output = malloc(sizeof(char)*256);
+                if((output = calloc(256, sizeof(char))) == NULL) {
+                    fprintf(stderr, "Error: %s\n", "Error trying to calloc() output.");
+                    return EXIT_FAILURE; 
+                }
                 strcpy(output, optarg);
                 /* In case file is small than 256, shrink allocated space. */
-                output = realloc(output, strlen(output));
+                if(output = realloc(output, strlen(output)) == NULL) {
+                    fprintf(stderr, "Error: %s\n", "Error trying to realloc() output.");
+                    return EXIT_FAILURE;
+                }
                 break;
         }
 
     /* Read Data ... */
     {
-        FILE *f = fopen(input, "rt");
+        FILE *f;
         int r;
         char tmp[2048], *ptr;
+
+        if((f = fopen(input, "rt")) == NULL) {
+            free(input);
+            free(output);
+            fprintf(stderr, "Error:%s", strerror(errno));
+            return EXIT_FAILURE;
+        }
 
         arraylist_init(&array, sizeof(pessoa_t), 10, 2);
 
@@ -127,5 +151,5 @@ int main(int argc, char **argv) {
 
     arraylist_destroy(&array);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
