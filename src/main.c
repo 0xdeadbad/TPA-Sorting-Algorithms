@@ -43,9 +43,7 @@ int main(int argc, char **argv) {
     int option_index;
     char *input, *output, c;
     arraylist_t array;
-
-    input = NULL;
-    output = NULL;
+    sorting_algorithm_f sort;
 
     static struct option long_options[] = {
         {"algorithm", required_argument, NULL, 'a'},
@@ -54,7 +52,8 @@ int main(int argc, char **argv) {
         {0, 0, 0, 0}
     };
 
-    sorting_algorithm_f sort;
+    input = NULL;
+    output = NULL;
 
     /* Parse Options ... */
     while((c = getopt_long(argc, argv, "i:o:a:", long_options, &option_index)) != -1)
@@ -85,7 +84,7 @@ int main(int argc, char **argv) {
                 }
                 strcpy(output, optarg);
                 /* In case file is small than 256, shrink allocated space. */
-                if(output = realloc(output, strlen(output)) == NULL) {
+                if((output = realloc(output, strlen(output))) == NULL) {
                     fprintf(stderr, "Error: %s\n", "Error trying to realloc() output.");
                     return EXIT_FAILURE;
                 }
