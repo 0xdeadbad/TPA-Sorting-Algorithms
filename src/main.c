@@ -3,23 +3,36 @@
 #include <getopt.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include "core/typedefs.h"
-#include "uthash/uthash.h"
 #include "algorithms/sortalgorithms.h"
 #include "core/arraylist.h"
 #include "core/pessoa.h"
+
+enum {QUICK_SORT = 0, SELECTION_SORT};
 
 int32_t cmp(void *a, void *b) {
     return strcmp(((pessoa_p)a)->uid, ((pessoa_p)b)->uid);
 }
 
+int32_t getAlg(const char *str) {
+    if(!strcmp("quick", str)) 
+        return QUICK_SORT;
+    else if(!strcmp("selection", str))
+        return SELECTION_SORT;
+
+    return -1;
+}
+
 int main(int argc, char **argv) {
     int option_index;
     char *input, *output, c;
+    clock_t time;
     arraylist_t array;
     sorting_algorithm_f sort;
-
+    sorting_algorithm_f algorithms[10];
     static struct option long_options[] = {
         {"algorithm", required_argument, NULL, 'a'},
         {"input",     required_argument, NULL, 'i'},
@@ -30,13 +43,24 @@ int main(int argc, char **argv) {
     input = NULL;
     output = NULL;
 
+    algorithms[QUICK_SORT] = quick_sort;
+    algorithms[SELECTION_SORT] = selection_sort;
+
     /* Parse Options ... */
     while((c = getopt_long(argc, argv, "i:o:a:", long_options, &option_index)) != -1)
         switch(c) {
             case 'a':
+            {
                 /* For now, will always set it to selection_sort, as it's the only one algorthm implemented by now. */
-                sort = selection_sort;
+                int32_t alg;
+                if((alg = getAlg(optarg)) == -1) {
+                    fprintf(stderr, "Algorítimo não implementado: %s\n", optarg);
+                    return EXIT_FAILURE;
+                }
+
+                sort = algorithms[alg];
                 break;
+            }
             case 'i':
                 /* Linux maximum file name is 256 chars. */
                 if((input = calloc(256, sizeof(char))) == NULL) {
@@ -115,7 +139,17 @@ int main(int argc, char **argv) {
         fclose(f);
     }
 
-    sort(array.array, array.size, array.item_size, cmp);
+    time = clock();
+    sort(array.array, array.size-1, array.item_size, cmp);
+    time = clock() - time;
+
+    printf("Tempo que levou para ordenar: %f segundos\n", ((double)time)/CLOCKS_PER_SEC);
+
+    {
+        for(int i = 0; i < array.size; i++) {
+            //printf("%s\n", ((pessoa_p)array.array+i)->uid);
+        }
+    }
 
     for(int i = 0; i < array.size; i++) {
         free(((pessoa_p)array.array+i)->email);
