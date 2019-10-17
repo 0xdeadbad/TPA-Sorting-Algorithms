@@ -4,5 +4,6 @@
 
 void selection_sort(void *ptr, size_t num, size_t size, cmp_f cmp);
 void quick_sort(void *ptr, size_t num, size_t size, cmp_f cmp);
+void insertion_sort(void *ptr, size_t num, size_t size, cmp_f cmp);
 
 #endif
