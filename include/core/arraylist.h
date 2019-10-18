@@ -2,7 +2,15 @@
 #define __ARRAYLIST_H__
 #include "sys/types.h"
 
+typedef void (*arraylist_iter_f)(void*);
+
 #define arraylist_destroy(a) free((a)->array);
+
+#define arraylist_iter(a, f) do                                                     \
+{                                                                                   \
+    for(int i = 0; i < (a)->size; i++) f((uint8_t*)(a)->array+i*(a)->item_size);    \
+}                                                                                   \
+while(0)
 
 typedef struct {
     void *array;
