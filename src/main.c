@@ -11,7 +11,7 @@
 #include "core/arraylist.h"
 #include "core/pessoa.h"
 
-enum {QUICK_SORT = 0, SELECTION_SORT, INSERTION_SORT, MERGE_SORT};
+enum {QUICK_SORT = 0, SELECTION_SORT, INSERTION_SORT, MERGE_SORT, HEAP_SORT};
 
 int32_t cmp(void *a, void *b) {
     return strcmp(((pessoa_p)a)->uid, ((pessoa_p)b)->uid);
@@ -26,6 +26,8 @@ int32_t getAlg(const char *str) {
         return INSERTION_SORT;
     else if(!strcmp("merge", str))
         return MERGE_SORT;
+    else if(!strcmp("heap", str))
+        return HEAP_SORT;
     return -1;
 }
 
@@ -72,6 +74,9 @@ int main(int argc, char **argv) {
 
                 if(algo == MERGE_SORT) {
                     anothersort = merge_sort;
+                    break;
+                } else if(algo == HEAP_SORT) {
+                    anothersort = heap_sort;
                     break;
                 }
                 sort = algorithms[algo];
@@ -155,7 +160,7 @@ int main(int argc, char **argv) {
     }
 
     time = clock();
-    if(algo == MERGE_SORT) {
+    if(algo == MERGE_SORT || algo == HEAP_SORT) {
         anothersort(array.array, array.size, cmp);
     } else {
         sort(array.array, array.size-1, array.item_size, cmp);
