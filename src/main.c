@@ -11,7 +11,7 @@
 #include "core/arraylist.h"
 #include "core/pessoa.h"
 
-enum {QUICK_SORT = 0, SELECTION_SORT, INSERTION_SORT, MERGE_SORT, HEAP_SORT, TIM_SORT};
+enum {QUICK_SORT = 0, SELECTION_SORT, INSERTION_SORT, MERGE_SORT, HEAP_SORT, TIM_SORT, INTRO_SORT};
 
 int32_t cmp(void *a, void *b) {
     return strcmp(((pessoa_p)a)->uid, ((pessoa_p)b)->uid);
@@ -30,6 +30,8 @@ int32_t getAlg(const char *str) {
         return HEAP_SORT;
     else if(!strcmp("tim", str))
         return TIM_SORT;
+    else if(!strcmp("intro", str))
+        return INTRO_SORT;
     return -1;
 }
 
@@ -83,6 +85,9 @@ int main(int argc, char **argv) {
                 } else if(algo == TIM_SORT) {
                     anothersort = tim_sort;
                     break;
+                } else if(algo == INTRO_SORT) {
+                    printf("INTRO\n");
+                    anothersort = intro_sort;
                 }
                 sort = algorithms[algo];
                 break;
@@ -165,14 +170,14 @@ int main(int argc, char **argv) {
     }
 
     time = clock();
-    if(algo == MERGE_SORT || algo == HEAP_SORT || algo == TIM_SORT) {
+    if(algo == MERGE_SORT || algo == TIM_SORT || algo == INTRO_SORT)
+        anothersort(array.array, array.size-1, cmp);
+    else if(algo == HEAP_SORT) 
         anothersort(array.array, array.size, cmp);
-    } else {
+    else 
         sort(array.array, array.size-1, array.item_size, cmp);
-    }
-    
     time = clock() - time;
-
+    
     //printf("Tempo que levou para ordenar: %f segundos\n", ((double)time)/CLOCKS_PER_SEC);
     //printf("Capacidade: %ld, size: %ld\n", array.capacity, array.size);
     {
