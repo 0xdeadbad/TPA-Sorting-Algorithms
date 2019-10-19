@@ -50,7 +50,6 @@ int main(int argc, char **argv) {
     arraylist_t array;
     sorting_algorithm_f sort;
     another_sort_f anothersort;
-    sorting_algorithm_f algorithms[10];
     static struct option long_options[] = {
         {"algorithm", required_argument, NULL, 'a'},
         {"input",     required_argument, NULL, 'i'},
@@ -62,10 +61,6 @@ int main(int argc, char **argv) {
     input = NULL;
     output = NULL;
 
-    algorithms[QUICK_SORT] = quick_sort;
-    algorithms[SELECTION_SORT] = selection_sort;
-    algorithms[INSERTION_SORT] = insertion_sort;
-
     /* Parse Options ... */
     while((c = getopt_long(argc, argv, "i:o:a:", long_options, &option_index)) != -1)
         switch(c) {
@@ -75,7 +70,7 @@ int main(int argc, char **argv) {
                     fprintf(stderr, "Algorítimo não implementado: %s\n", optarg);
                     return EXIT_FAILURE;
                 }
-
+                //QUICK_SORT = 0, SELECTION_SORT, INSERTION_SORT, MERGE_SORT, HEAP_SORT, TIM_SORT, INTRO_SORT
                 if(algo == MERGE_SORT) {
                     anothersort = merge_sort;
                     break;
@@ -85,11 +80,20 @@ int main(int argc, char **argv) {
                 } else if(algo == TIM_SORT) {
                     anothersort = tim_sort;
                     break;
+                } else if(algo == QUICK_SORT) {
+                    sort = quick_sort;
+                    break;
+                } else if(algo == SELECTION_SORT) {
+                    sort = selection_sort;
+                    break;
+                } else if(algo == INSERTION_SORT) {
+                    sort = insertion_sort;
+                    break;
                 } else if(algo == INTRO_SORT) {
-                    printf("INTRO\n");
-                    anothersort = intro_sort;
+                    sort = intro_sort;
+                    break;
                 }
-                sort = algorithms[algo];
+
                 break;
             case 'i':
                 /* Linux maximum file name is 256 chars. */
@@ -170,14 +174,14 @@ int main(int argc, char **argv) {
     }
 
     time = clock();
-    if(algo == MERGE_SORT || algo == TIM_SORT || algo == INTRO_SORT)
+    if(algo == MERGE_SORT || algo == TIM_SORT)
         anothersort(array.array, array.size-1, cmp);
     else if(algo == HEAP_SORT) 
         anothersort(array.array, array.size, cmp);
     else 
         sort(array.array, array.size-1, array.item_size, cmp);
     time = clock() - time;
-    
+
     //printf("Tempo que levou para ordenar: %f segundos\n", ((double)time)/CLOCKS_PER_SEC);
     //printf("Capacidade: %ld, size: %ld\n", array.capacity, array.size);
     {
