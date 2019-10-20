@@ -8,22 +8,18 @@
 #include "core/util.h"
 
 void insertion_sort(void *ptr, size_t num, size_t size, cmp_f cmp) {
-    for(int k = 1; k <= num; k++) {
-        void *elem;
-        uint8_t *pos, *zero;
+    int i, j, chave;
 
-        elem = calloc(1, size);
-        memcpy(elem, (uint8_t*)ptr+k*size, size);
+    i = 0;
 
-        pos = (uint8_t*)ptr+k*size;
-        zero = (uint8_t*)ptr;
-
-        while(pos > zero && cmp((uint8_t*)pos-size, elem) > 0) {
-            memcpy(pos, (uint8_t*)pos-size, size);
-            pos -= size;
+    for(j = 1; j < num; j++) {
+        memcpy(&chave, (uint8_t*)ptr+j*size, size);
+        i = j - 1;
+        while(i >= 0 && cmp((uint8_t*)ptr+i*size, &chave)) {
+            memcpy((uint8_t*)ptr+(i+1)*size, (uint8_t*)ptr+i*size, size);
+            i--;
         }
-
-        memcpy(pos, elem, size);
-        free(elem);
+            
+        memcpy((uint8_t*)ptr+(i+1)*size, &chave, size);
     }
 }
