@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
         sort(array.array, array.size-1, array.item_size, cmp);
     time = clock() - time;
 
-    //printf("Tempo que levou para ordenar: %f segundos\n", ((double)time)/CLOCKS_PER_SEC);
+    printf("Tempo que levou para ordenar: %f segundos\n", ((double)time)/CLOCKS_PER_SEC);
     //printf("Capacidade: %ld, size: %ld\n", array.capacity, array.size);
     {
         FILE *out = fopen(output, "wt");
