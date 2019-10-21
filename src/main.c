@@ -174,9 +174,9 @@ int main(int argc, char **argv) {
     }
 
     time = clock();
-    if(algo == MERGE_SORT || algo == TIM_SORT)
+    if(algo == TIM_SORT)
         anothersort(array.array, array.size-1, cmp);
-    else if(algo == HEAP_SORT) 
+    else if(algo == HEAP_SORT || algo == MERGE_SORT) 
         anothersort(array.array, array.size, cmp);
     else 
         sort(array.array, array.size-1, array.item_size, cmp);
