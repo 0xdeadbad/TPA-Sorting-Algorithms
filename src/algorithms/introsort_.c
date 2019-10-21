@@ -36,6 +36,8 @@ void intro(void *ptr, size_t num, size_t size, cmp_f cmp, int32_t maxdepth) {
 
     if(num <= 1)
         return;
+    else if(num <= 32) 
+        insertion_sort(ptr, num, size, cmp);
     else if(num-1 > maxdepth) {
         heap_sort(ptr, num+1, cmp);
         return;
